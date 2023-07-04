@@ -263,18 +263,20 @@ Module.register("MMM-homeassistant-sensors", {
 									negState = true;
 								}
 
-								condition.stateVals.forEach((val) => {
-									if(this.debuglogging) {
-										console.log("MMM-homeassistant-sensors - vals: " + val);
-									}
-									// If sensor value matches the value we're looking for
-									if(stateval == val) {
+								if(condition.stateVals !== undefined) {
+									condition.stateVals.forEach((val) => {
 										if(this.debuglogging) {
-											console.log("MMM-homeassistant-sensors - " + val + " found");
+											console.log("MMM-homeassistant-sensors - vals: " + val);
 										}
-										found = true;
-									}
-								});
+										// If sensor value matches the value we're looking for
+										if(stateval == val) {
+											if(this.debuglogging) {
+												console.log("MMM-homeassistant-sensors - " + val + " found");
+											}
+											found = true;
+										}
+									});
+								}
 
 								// If we found what we're looking for - or didn't find what we're NOT looking for
 								if((!found && negState) ||(found && !negState)) {
@@ -289,6 +291,9 @@ Module.register("MMM-homeassistant-sensors", {
 								}
 								else if(found && negState && condition.notificationValNeg !== undefined) {
 									notificationValue = condition.notificationValNeg;
+								}
+								else if(condition.getState !== undefined && condition.getState === true) {
+									notificationValue = stateval;
 								}
 							});
 
